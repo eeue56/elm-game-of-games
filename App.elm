@@ -5,6 +5,13 @@ import Array exposing (..)
 main =
   show <| update board 2 2 (\_ -> 5)
 
+
+gameStep : Array (Array a) -> Array (Array a)
+gameRule array = let
+    updateBlock x y = gameRule array x y
+  in
+    Array.indexedMap (\x n -> Array.indexedMap (\y m -> updateBlock x y)) 
+
 gameRule : Array (Array a) -> Int -> Int -> Int
 gameRule array i j 
   let 
