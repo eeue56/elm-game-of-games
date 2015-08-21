@@ -5,6 +5,22 @@ import Array exposing (..)
 main =
   show <| update board 2 2 (\_ -> 5)
 
+gameRule : Array (Array a) -> Int -> Int -> Int
+gameRule array i j 
+  let 
+    neighbours = livingNeighbours array i j
+    populate x neighbours = if
+      | x == 0 -> if 
+        | neighbours > 1 || neighbours < 3 -> 1
+        | otherwise -> 0
+      | x == 1 -> if
+        | neighbours == 2 -> 1
+        | otherwise -> 0
+  in
+    case matrixGet array i j of
+      Just x -> populate x neighbours
+      Nothing -> 0
+
 livingNeighbours : Array (Array a) -> Int -> Int ->Int
 livingNeighbours array i j = 
   let 
