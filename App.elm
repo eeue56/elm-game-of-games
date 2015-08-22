@@ -2,9 +2,25 @@ import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
 import Array exposing (..)
 
-main =
-  show <| update board 2 2 (\_ -> 5)
+import Color exposing (red, black)
 
+rectSize = 5
+
+main =
+  show <| gameStep board 2 2 
+
+drawRect x y value =
+  rect rectSize rectSize
+    |> filled (if value > 0 then red else black)
+    |> move (rectSize * x) (rectSize * y)
+
+drawRow i rowArray =
+  Array.toList <| Array.indexedMap (\j v -> drawRect i j v) rowArray
+
+draw : Array (Array a) -> Form
+draw array = 
+  collage [] 
+    <| (List.concat << Array.toList) <| Array.indexedMap (\i arr -> drawRow i arr) array
 
 gameStep : Array (Array a) -> Array (Array a)
 gameRule array = let
