@@ -7,29 +7,33 @@ import Color exposing (red, black)
 rectSize = 5
 
 main =
-  show <| gameStep board 2 2 
+  show <| gameStep <| board
 
+drawRect : Float -> Float -> Int -> Form
 drawRect x y value =
   rect rectSize rectSize
     |> filled (if value > 0 then red else black)
-    |> move (rectSize * x) (rectSize * y)
+    |> move (rectSize * x, rectSize * y)
 
 drawRow i rowArray =
-  Array.toList <| Array.indexedMap (\j v -> drawRect i j v) rowArray
+  let
+    rekt j v = drawRect (toFloat i) (toFloat j) (v)
+  in
+     Array.toList <| Array.indexedMap rekt rowArray
 
-draw : Array (Array a) -> Form
+draw : Array (Array Int) -> Form
 draw array = 
-  collage [] 
+  toForm <| collage 500 500
     <| (List.concat << Array.toList) <| Array.indexedMap (\i arr -> drawRow i arr) array
 
-gameStep : Array (Array a) -> Array (Array a)
-gameRule array = let
+gameStep : Array (Array Int) -> Array (Array Int)
+gameStep array = let
     updateBlock x y = gameRule array x y
   in
-    Array.indexedMap (\x n -> Array.indexedMap (\y m -> updateBlock x y)) 
+    Array.indexedMap (\x n -> Array.indexedMap (\y m -> updateBlock x y) n) array
 
-gameRule : Array (Array a) -> Int -> Int -> Int
-gameRule array i j 
+gameRule : Array (Array Int) -> Int -> Int -> Int
+gameRule array i j =
   let 
     neighbours = livingNeighbours array i j
     populate x neighbours = if
@@ -44,19 +48,20 @@ gameRule array i j
       Just x -> populate x neighbours
       Nothing -> 0
 
-livingNeighbours : Array (Array a) -> Int -> Int ->Int
+livingNeighbours : Array (Array Int) -> Int -> Int ->Int
 livingNeighbours array i j = 
   let 
-    guardedGet = (\x y -> if x /= j and y /= j then matrixGet array x else Nothing)
-  sum 
-    List.map (\x -> 
-      case x of 
+    guardedGet = (\x y -> if (x /= j) && (y /= j) then matrixGet array x y else Nothing)
+    binSwap x =  case x of 
         Just _ -> 1 
-        Nothing -> 0)
-    <| List.map (\x -> List.map (guardedGet x) [i-1..i+1]) [j-1..j+1] 
+        Nothing -> 0
+  in
+  List.sum <| List.map binSwap <| List.concat <| List.map (\x -> List.map (guardedGet x) [i-1..i+1]) [j-1..j+1] 
 
 matrixGet : Array (Array a) -> Int -> Int -> Maybe a 
-matrixGet array i j = Array.get i <| Array.get j array 
+matrixGet array i j =case Array.get j array of
+  Just x ->  Array.get i x
+  Nothing -> Nothing
 
 update array i j f = 
   let 
