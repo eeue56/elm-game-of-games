@@ -1,13 +1,49 @@
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
+
+
 import Array exposing (..)
 
+import Mouse
 import Color exposing (red, black)
 
-rectSize = 25
+type Update = NextStep Bool
 
-main =
-  draw <| gameStep <| board
+rectSize = 25
+--board = Array.fromList <|  List.map (\x -> Array.repeat 5 0) [0..4] 
+board' =
+  Array.fromList 
+    <| [ Array.repeat 5 0,
+           Array.repeat 5 0,
+           Array.repeat 5 1,
+           Array.repeat 5 1,
+           Array.repeat 5 0]
+
+model = {
+  board = board',
+  clicks = 0 }
+
+clicks = Mouse.isDown
+
+view model = above (show model.clicks) <| draw <| model.board
+
+addClick model = { model | clicks <- model.clicks + 1 }
+
+updateModel action model =
+  case action of
+    NextStep bool -> if
+      | bool -> addClick { model | board <- gameStep model.board }
+      | otherwise -> model
+    _ -> model
+
+model' =
+  Signal.foldp
+    updateModel
+    model
+    <| Signal.map NextStep Mouse.isDown 
+     
+
+main = Signal.map (view)  model'
 
 drawRect : Float -> Float -> Int -> Form
 drawRect x y value =
@@ -39,9 +75,7 @@ gameRule array i j =
     populate x neighbours = if
       | neighbours < 2 -> 0
       | neighbours > 3 -> 0
-      | x == 0  -> if 
-        | neighbours == 3 -> 1
-        | otherwise -> 0
+      | x == 0  -> if neighbours == 3 then 1 else 0
       | otherwise -> 1
       
   in
@@ -54,7 +88,7 @@ livingNeighbours array i j =
   let 
     guardedGet x y = if (x /= j) && (y /= j) then matrixGet array x y else Nothing
     binSwap x =  case x of 
-        Just _ -> 1 
+        Just x -> x 
         Nothing -> 0
   in
     List.sum 
@@ -77,4 +111,3 @@ update array i j f =
     Just x -> updatePart x
     Nothing -> array
     
-board = Array.fromList <|  List.map (\x -> Array.repeat 5 0) [0..4] 
