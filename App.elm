@@ -43,6 +43,7 @@ gameRule array i j =
       | x == 1 -> if
         | neighbours == 2 -> 1
         | otherwise -> 0
+      | otherwise -> 0
   in
     case matrixGet array i j of
       Just x -> populate x neighbours
@@ -51,15 +52,18 @@ gameRule array i j =
 livingNeighbours : Array (Array Int) -> Int -> Int ->Int
 livingNeighbours array i j = 
   let 
-    guardedGet = (\x y -> if (x /= j) && (y /= j) then matrixGet array x y else Nothing)
+    guardedGet x y = if (x /= j) && (y /= j) then matrixGet array x y else Nothing
     binSwap x =  case x of 
         Just _ -> 1 
         Nothing -> 0
   in
-  List.sum <| List.map binSwap <| List.concat <| List.map (\x -> List.map (guardedGet x) [i-1..i+1]) [j-1..j+1] 
+    List.sum 
+      <| List.map binSwap 
+      <| List.concat 
+      <| List.map (\x -> List.map (guardedGet x) [i-1..i+1]) [j-1..j+1] 
 
 matrixGet : Array (Array a) -> Int -> Int -> Maybe a 
-matrixGet array i j =case Array.get j array of
+matrixGet array i j = case Array.get j array of
   Just x ->  Array.get i x
   Nothing -> Nothing
 
