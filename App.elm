@@ -4,10 +4,10 @@ import Array exposing (..)
 
 import Color exposing (red, black)
 
-rectSize = 5
+rectSize = 25
 
 main =
-  show <| gameStep <| board
+  draw <| gameStep <| board
 
 drawRect : Float -> Float -> Int -> Form
 drawRect x y value =
@@ -21,9 +21,9 @@ drawRow i rowArray =
   in
      Array.toList <| Array.indexedMap rekt rowArray
 
-draw : Array (Array Int) -> Form
+draw : Array (Array Int) -> Element
 draw array = 
-  toForm <| collage 500 500
+  collage 500 500
     <| (List.concat << Array.toList) <| Array.indexedMap (\i arr -> drawRow i arr) array
 
 gameStep : Array (Array Int) -> Array (Array Int)
@@ -37,13 +37,13 @@ gameRule array i j =
   let 
     neighbours = livingNeighbours array i j
     populate x neighbours = if
-      | x == 0 -> if 
-        | neighbours > 1 || neighbours < 3 -> 1
+      | neighbours < 2 -> 0
+      | neighbours > 3 -> 0
+      | x == 0  -> if 
+        | neighbours == 3 -> 1
         | otherwise -> 0
-      | x == 1 -> if
-        | neighbours == 2 -> 1
-        | otherwise -> 0
-      | otherwise -> 0
+      | otherwise -> 1
+      
   in
     case matrixGet array i j of
       Just x -> populate x neighbours
