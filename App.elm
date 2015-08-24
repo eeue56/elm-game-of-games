@@ -81,7 +81,6 @@ gameRule array i j =
       | neighbours > 3 -> 0
       | x == 0  -> if neighbours == 3 then 1 else 0
       | otherwise -> 1
-      
   in
     case matrixGet array i j of
       Just x -> populate x neighbours
@@ -91,7 +90,7 @@ livingNeighbours : Array (Array Int) -> Int -> Int ->Int
 livingNeighbours array i j = 
   let 
     guardedGet x y = if (x /= j) && (y /= j) then matrixGet array x y else Nothing
-    binSwap x =  case x of 
+    binSwap itemValue =  case itemValue of 
         Just x -> x 
         Nothing -> 0
   in
@@ -108,7 +107,7 @@ matrixGet array i j = case Array.get j array of
 update array i j f = 
   let 
     updatePart x = case Array.get j x of
-      Just y -> Array.set i (Array.set j (f y) x) array
+      Just y -> Array.set j (Array.set i (f y) x) array
       Nothing -> array
   in
   case Array.get i array of
