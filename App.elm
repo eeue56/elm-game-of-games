@@ -57,10 +57,14 @@ drawRow i rowArray =
   in
      Array.toList <| Array.indexedMap rekt rowArray
 
+drawArray array =
+  (List.concat << Array.toList) <| Array.indexedMap (drawRow) array
+
+
 draw : Array (Array Int) -> Element
 draw array = 
   collage 500 500
-    <| (List.concat << Array.toList) <| Array.indexedMap (\i arr -> drawRow i arr) array
+    <| drawArray array
 
 gameStep : Array (Array Int) -> Array (Array Int)
 gameStep array = let
