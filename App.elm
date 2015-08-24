@@ -53,13 +53,18 @@ updateModel action model =
     Reset -> resetModel model
     _ -> model
 
+stepSignal = 
+  Signal.merge 
+    (Signal.map (NextStep) Mouse.isDown)
+    (Signal.map NextStep <| Keyboard.isDown 78)
+
 model' =
   Signal.foldp
     updateModel
     model
     <| Signal.merge 
-        (Signal.map (NextStep) Mouse.isDown)
-        (Signal.map (\_ -> Reset) <| Keyboard.isDown 114)
+        stepSignal
+        (Signal.map (\_ -> Reset) <| Keyboard.isDown 82)
      
 
 main = Signal.map (view) model'
