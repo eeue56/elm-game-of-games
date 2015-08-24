@@ -5,27 +5,43 @@ import Graphics.Element exposing (..)
 import Array exposing (..)
 
 import Mouse
+import Keyboard
+
 import Color exposing (red, black)
 
-type Update = NextStep Bool
+type Update = NextStep Bool | Reset | Noop
 
 rectSize = 25
 --board = Array.fromList <|  List.map (\x -> Array.repeat 5 0) [0..4] 
-board' =
-  Array.fromList 
-    <| [ Array.repeat 5 0,
-           Array.repeat 5 0,
-           Array.repeat 5 1,
-           Array.repeat 5 1,
-           Array.repeat 5 0]
+--board' =
+--  Array.fromList 
+--    <| [ Array.repeat 5 0,
+--           Array.repeat 5 0,
+--           Array.repeat 5 1,
+--           Array.repeat 5 1,
+--           Array.repeat 5 0]
+           
+board' = 
+  Array.fromList
+    <| List.map Array.fromList
+    <|
+      [ [1, 1, 0],
+        [1, 1, 0],
+        [0, 0, 0] ]
 
 model = {
   board = board',
   clicks = 0 }
 
-clicks = Mouse.isDown
 
-view model = above (show model.clicks) <| draw <| model.board
+resetModel model = 
+  let
+    resetBoard model = { model | board <- board'}
+    resetClick model = { model | clicks <- 0 }
+  in
+    resetBoard <| resetClick model
+
+view model = above (container 500 100 middle <| show model.clicks) <| draw <| model.board
 
 addClick model = { model | clicks <- model.clicks + 1 }
 
@@ -34,16 +50,19 @@ updateModel action model =
     NextStep bool -> if
       | bool -> addClick { model | board <- gameStep model.board }
       | otherwise -> model
+    Reset -> resetModel model
     _ -> model
 
 model' =
   Signal.foldp
     updateModel
     model
-    <| Signal.map NextStep Mouse.isDown 
+    <| Signal.merge 
+        (Signal.map (NextStep) Mouse.isDown)
+        (Signal.map (\_ -> Reset) <| Keyboard.isDown 114)
      
 
-main = Signal.map (view)  model'
+main = Signal.map (view) model'
 
 drawRect : Float -> Float -> Int -> Form
 drawRect x y value =
@@ -81,6 +100,7 @@ gameRule array i j =
       | neighbours > 3 -> 0
       | x == 0  -> if neighbours == 3 then 1 else 0
       | otherwise -> 1
+      
   in
     case matrixGet array i j of
       Just x -> populate x neighbours
@@ -89,8 +109,8 @@ gameRule array i j =
 livingNeighbours : Array (Array Int) -> Int -> Int ->Int
 livingNeighbours array i j = 
   let 
-    guardedGet x y = if (x /= j) && (y /= j) then matrixGet array x y else Nothing
-    binSwap itemValue =  case itemValue of 
+    guardedGet x y = if (x > -1) && (y > -1) && (x /= j) && (y /= j) then matrixGet array x y else Nothing
+    binSwap x =  case x of 
         Just x -> x 
         Nothing -> 0
   in
@@ -113,4 +133,3 @@ update array i j f =
   case Array.get i array of
     Just x -> updatePart x
     Nothing -> array
-    
