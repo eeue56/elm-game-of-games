@@ -121,7 +121,7 @@ livingNeighbours : Array (Array Int) -> Int -> Int ->Int
 livingNeighbours array i j = 
   let 
     isMe' = isMe i j
-    guardedGet x y = if withinBounds && not <| isMe' (x, y) then matrixGet array x y else Nothing
+    guardedGet x y = if withinBounds x y && not <| isMe' (x, y) then matrixGet array x y else Nothing
     binSwap x =  case x of 
         Just x -> x 
         Nothing -> 0
