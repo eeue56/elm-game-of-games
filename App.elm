@@ -114,7 +114,7 @@ gameRule array i j =
 livingNeighbours : Array (Array Int) -> Int -> Int ->Int
 livingNeighbours array i j = 
   let 
-    guardedGet x y = if (x > -1) && (y > -1) && (x /= j) && (y /= j) then matrixGet array x y else Nothing
+    guardedGet x y = if (x > -1) && (y > -1) && not ((x == j) && (y == j)) then matrixGet array x y else Nothing
     binSwap x =  case x of 
         Just x -> x 
         Nothing -> 0
