@@ -111,10 +111,17 @@ gameRule array i j =
       Just x -> populate x neighbours
       Nothing -> 0
 
+isMe : (Int, Int) -> (Int, Int) -> Bool
+isMe (x, y) (i, j) = x == i && y == j
+
+withinBounds : Int -> Int -> Bool
+withinBounds x y = x > -1 && y > -1
+
 livingNeighbours : Array (Array Int) -> Int -> Int ->Int
 livingNeighbours array i j = 
   let 
-    guardedGet x y = if (x > -1) && (y > -1) && not ((x == j) && (y == j)) then matrixGet array x y else Nothing
+    isMe' = isMe i j
+    guardedGet x y = if withinBounds && not <| isMe' (x, y) then matrixGet array x y else Nothing
     binSwap x =  case x of 
         Just x -> x 
         Nothing -> 0
