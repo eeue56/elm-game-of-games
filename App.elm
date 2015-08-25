@@ -17,7 +17,7 @@ type alias Board = Array (Array Int)
 rectSize = 25
 
 board' : Board
-board' = Boards.stampBoard 4 5 Boards.stillSquare <| Boards.stampBoard 1 1 Boards.oscillatorCol <| Boards.emptyBoard 10 15
+board' = Boards.stampBoard 5 10 Boards.stillSquare <| Boards.stampBoard 1 1 Boards.oscillatorCol <| Boards.emptyBoard 10 15
 
 model = {
   board = board',
@@ -81,7 +81,7 @@ draw array =
     <| drawArray array
 
 arrayUpdate : Board -> (Board -> Int -> Int -> Int) -> Board
-arrayUpdate array f = Array.indexedMap (\x n -> Array.indexedMap (\y m -> f array x y) n) array
+arrayUpdate array f = Array.indexedMap (\y n -> Array.indexedMap (\x m -> f array x y) n) array
 
 gameStep : Board -> Board
 gameStep array = arrayUpdate array gameRule
@@ -104,7 +104,7 @@ gameRule array i j =
 livingNeighbours : Board -> Int -> Int ->Int
 livingNeighbours array i j = 
   let 
-    guardedGet x y = if (i, j) /= (x, y) then matrixGet array x y else Nothing
+    guardedGet di dj = if (di, dj) /= (0, 0) then matrixGet array (i+di) (j+dj) else Nothing
     binSwap x =  case x of 
         Just x -> x 
         Nothing -> 0
@@ -112,7 +112,7 @@ livingNeighbours array i j =
     List.sum 
       <| List.map binSwap 
       <| List.concat 
-      <| List.map (\x -> List.map (guardedGet x) [i-1..i+1]) [j-1..j+1] 
+      <| List.map (\x -> List.map (guardedGet x) [-1..1]) [-1..1] 
 
 matrixGet : Array (Array a) -> Int -> Int -> Maybe a 
 matrixGet array i j = case Array.get j array of
