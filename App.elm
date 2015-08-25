@@ -17,7 +17,7 @@ type alias Board = Array (Array Int)
 rectSize = 25
 
 board' : Board
-board' = Boards.stampBoard 5 10 Boards.stillSquare <| Boards.stampBoard 1 1 Boards.oscillatorCol <| Boards.emptyBoard 10 15
+board' = Boards.stampBoard 6 10 Boards.stillSquare <| Boards.stampBoard 2 1 Boards.oscillatorCol <| Boards.emptyBoard 10 15
 
 model = {
   board = board',
@@ -65,9 +65,9 @@ drawRect x y value =
     |> filled (rgb (value * 255) 0 0 )
     |> move (rectSize * x, rectSize * y)
 
-drawRow i rowArray =
+drawRow j rowArray =
   let
-    rekt j v = drawRect (toFloat i) (toFloat j) (v)
+    rekt i v = drawRect (toFloat i) (toFloat j) (v)
   in
      Array.toList <| Array.indexedMap rekt rowArray
 
