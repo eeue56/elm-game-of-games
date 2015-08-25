@@ -24,13 +24,26 @@ lonelyBoard =
         [0, 1, 0],
         [0, 0, 0] ]
 
-oscillator = 
+oscillatorRow = 
   Array.fromList
     <| List.map Array.fromList
     <|
-      [ [0, 0, 0],
-        [1, 1, 1],
-        [0, 0, 0] ]
+      [ [1, 1, 1] ]
+
+oscillatorCol = 
+  Array.fromList
+    <| List.map Array.fromList
+    <|
+      [ [1],
+        [1],
+        [1] ]
+
+stillSquare = 
+  Array.fromList
+    <| List.map Array.fromList
+    <|
+      [ [1, 1],
+        [1, 1] ]
 
 rect height width =  List.concat <| List.map (\x-> List.map2 (,) [0..(width-1)] <| List.repeat width x) [0..(height-1)]
 

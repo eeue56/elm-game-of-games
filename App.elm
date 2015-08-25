@@ -8,14 +8,16 @@ import Mouse
 import Keyboard
 import Boards
 
-import Color exposing (red, black)
+import Color exposing (red, black, toRgb, rgb)
 
 type Update = NextStep Bool | Reset | Noop
+type alias Board = Array (Array Int)
+
 
 rectSize = 25
 
-board' : Array (Array Int)
-board' = Boards.stampBoard 1 3 Boards.oscillator <| Boards.stampBoard 1 1 Boards.oscillator <| Boards.emptyBoard 10 10
+board' : Board
+board' = Boards.stampBoard 4 5 Boards.stillSquare <| Boards.stampBoard 1 1 Boards.oscillatorCol <| Boards.emptyBoard 10 15
 
 model = {
   board = board',
@@ -29,7 +31,7 @@ resetModel model =
   in
     resetBoard <| resetClick model
 
-view model = above (container 500 100 middle <| show model.clicks) <| draw <| model.board
+view model = above (container 500 100 middle <| show model.clicks) <| draw model.board -- <| arrayUpdate model.board livingNeighbours
 
 addClick model = { model | clicks <- model.clicks + 1 }
 
@@ -60,7 +62,7 @@ main = Signal.map (view) model'
 drawRect : Float -> Float -> Int -> Form
 drawRect x y value =
   rect rectSize rectSize
-    |> filled (if value > 0 then red else black)
+    |> filled (rgb (value * 255) 0 0 )
     |> move (rectSize * x, rectSize * y)
 
 drawRow i rowArray =
@@ -73,16 +75,16 @@ drawArray array =
   (List.concat << Array.toList) <| Array.indexedMap (drawRow) array
 
 
-draw : Array (Array Int) -> Element
+draw : Board -> Element
 draw array = 
-  collage 500 500
+  collage 1000 750
     <| drawArray array
 
-gameStep : Array (Array Int) -> Array (Array Int)
-gameStep array = let
-    updateBlock x y = gameRule array x y
-  in
-    Array.indexedMap (\x n -> Array.indexedMap (\y m -> updateBlock x y) n) array
+arrayUpdate : Board -> (Board -> Int -> Int -> Int) -> Board
+arrayUpdate array f = Array.indexedMap (\x n -> Array.indexedMap (\y m -> f array x y) n) array
+
+gameStep : Board -> Board
+gameStep array = arrayUpdate array gameRule
 
 gameRule : Array (Array Int) -> Int -> Int -> Int
 gameRule array i j =
@@ -99,17 +101,10 @@ gameRule array i j =
       Just x -> populate x neighbours
       Nothing -> 0
 
-isMe : (Int, Int) -> (Int, Int) -> Bool
-isMe (x, y) (i, j) = x == i && y == j
-
-withinBounds : Int -> Int -> Bool
-withinBounds x y = x > -1 && y > -1
-
-livingNeighbours : Array (Array Int) -> Int -> Int ->Int
+livingNeighbours : Board -> Int -> Int ->Int
 livingNeighbours array i j = 
   let 
-    isMe' = isMe (i, j)
-    guardedGet x y = if withinBounds x y && (not <| isMe' (x, y)) then matrixGet array x y else Nothing
+    guardedGet x y = if (i, j) /= (x, y) then matrixGet array x y else Nothing
     binSwap x =  case x of 
         Just x -> x 
         Nothing -> 0
@@ -123,6 +118,8 @@ matrixGet : Array (Array a) -> Int -> Int -> Maybe a
 matrixGet array i j = case Array.get j array of
   Just x ->  Array.get i x
   Nothing -> Nothing
+
+
 
 update array i j f = 
   let 
