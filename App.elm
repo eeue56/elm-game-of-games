@@ -6,28 +6,16 @@ import Array exposing (..)
 
 import Mouse
 import Keyboard
+import Boards
 
 import Color exposing (red, black)
 
 type Update = NextStep Bool | Reset | Noop
 
 rectSize = 25
---board = Array.fromList <|  List.map (\x -> Array.repeat 5 0) [0..4] 
---board' =
---  Array.fromList 
---    <| [ Array.repeat 5 0,
---           Array.repeat 5 0,
---           Array.repeat 5 1,
---           Array.repeat 5 1,
---           Array.repeat 5 0]
-           
-board' = 
-  Array.fromList
-    <| List.map Array.fromList
-    <|
-      [ [1, 1, 0],
-        [1, 1, 0],
-        [0, 0, 0] ]
+
+board' : Array (Array Int)
+board' = Boards.stampBoard 1 3 Boards.oscillator <| Boards.stampBoard 1 1 Boards.oscillator <| Boards.emptyBoard 10 10
 
 model = {
   board = board',
@@ -120,8 +108,8 @@ withinBounds x y = x > -1 && y > -1
 livingNeighbours : Array (Array Int) -> Int -> Int ->Int
 livingNeighbours array i j = 
   let 
-    isMe' = isMe i j
-    guardedGet x y = if withinBounds x y && not <| isMe' (x, y) then matrixGet array x y else Nothing
+    isMe' = isMe (i, j)
+    guardedGet x y = if withinBounds x y && (not <| isMe' (x, y)) then matrixGet array x y else Nothing
     binSwap x =  case x of 
         Just x -> x 
         Nothing -> 0
