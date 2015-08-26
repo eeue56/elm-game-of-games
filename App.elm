@@ -13,11 +13,13 @@ import Color exposing (red, black, toRgb, rgb)
 type Update = NextStep Bool | Reset | Noop
 type alias Board = Array (Array Int)
 
+pageWidth = 1000
+pageHeight = 750
 
 rectSize = 25
 
 board' : Board
-board' = Boards.stampBoard 6 10 Boards.stillSquare <| Boards.stampBoard 2 1 Boards.oscillatorCol <| Boards.emptyBoard 10 15
+board' =  Boards.stampBoard 1 9 Boards.noahsLessBeautifulGithubAvatar <| Boards.emptyBoard 10 15
 
 model = {
   board = board',
@@ -63,7 +65,7 @@ drawRect : Float -> Float -> Int -> Form
 drawRect x y value =
   rect rectSize rectSize
     |> filled (rgb (value * 255) 0 0 )
-    |> move (rectSize * x, rectSize * y)
+    |> move (rectSize * x, (pageHeight/2)-(rectSize * y))
 
 drawRow j rowArray =
   let
@@ -77,7 +79,7 @@ drawArray array =
 
 draw : Board -> Element
 draw array = 
-  collage 1000 750
+  collage pageWidth pageHeight
     <| drawArray array
 
 arrayUpdate : Board -> (Board -> Int -> Int -> Int) -> Board

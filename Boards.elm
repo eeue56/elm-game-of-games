@@ -15,6 +15,25 @@ matrixSet i j v m =
     in
         Array.set j (Array.set i v row) m
 
+sheepsBeautifulGithubAvatar = 
+  Array.fromList
+    <| List.map Array.fromList
+    <|
+      [ [0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 0, 1, 0, 0],
+        [0, 1, 0, 1, 0],
+        [1, 1, 0, 1, 1] ]
+
+noahsLessBeautifulGithubAvatar = 
+  Array.fromList
+    <| List.map Array.fromList
+    <|
+      [ [0, 1, 1, 1, 0],
+        [0, 1, 1, 1, 0],
+        [0, 0, 1, 0, 0],
+        [1, 1, 1, 1, 1],
+        [0, 1, 1, 1, 0] ]
 
 lonelyBoard = 
   Array.fromList
