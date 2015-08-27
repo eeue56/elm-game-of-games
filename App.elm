@@ -4,15 +4,17 @@ import Graphics.Element exposing (..)
 
 import Array exposing (..)
 
+import Time
+
 import Mouse
 import Keyboard
 import Boards
 
 import Color exposing (red, black, toRgb, rgb)
 
-type Update = MouseClick Int Int | NextStep Bool | Reset | Noop
+type Update = MouseClick Int Int | NextStep Bool | TickerStep | ToggleAutoplay | Reset | Noop 
 type alias Board = Array (Array Int)
-type alias Model = {board : Board, clicks : Int, debug : String}
+type alias Model = {board : Board, clicks : Int, autoplay: Bool, debug : String}
 
 collageWidth = 1100
 collageHeight = 400
@@ -28,6 +30,7 @@ model : Model
 model = {
   board = board',
   clicks = 0,
+  autoplay = False,
   debug = "" }
 
 
@@ -35,6 +38,7 @@ resetModel model =
   let
     resetBoard model = { model | board <- board'}
     resetClick model = { model | clicks <- 0 }
+    resetAutoplay model = { model | autoplay <- False}
     resetDebug model = { model | debug <- ""}
   in
     resetBoard <| resetClick model
@@ -52,11 +56,14 @@ updateModel action model =
     NextStep bool -> if
       | bool -> addClick { model | board <- gameStep model.board }
       | otherwise -> model
-    MouseClick x y -> addDebug (toString <| toSquare x y) { model | board <- toggle model.board <| toSquare x y }
+    TickerStep -> if model.autoplay then updateModel (NextStep True) model else model
+    ToggleAutoplay -> addDebug (toString model.autoplay) { model | autoplay <- not model.autoplay}
+    MouseClick x y -> { model | board <- toggle model.board <| toSquare x y }
     Reset -> resetModel model
     _ -> model
 
 clickSignal = Signal.map2 (\isDown (x,y) -> if isDown then MouseClick x y else Noop) Mouse.isDown Mouse.position
+metronome = Time.every (Time.second / 2)
 
 model' : Signal Model
 model' =
@@ -66,8 +73,10 @@ model' =
     <| Signal.mergeMany
       [
         clickSignal,
-        (Signal.map NextStep <| Keyboard.isDown 78),
-        (Signal.map (\_ -> Reset) <| Keyboard.isDown 82)
+        Signal.map NextStep <| Keyboard.isDown 78,
+        Signal.map (\isDown -> if isDown then ToggleAutoplay else Noop) <| Keyboard.isDown 80,
+        Signal.map (\_ -> TickerStep) <| metronome,
+        Signal.map (\_ -> Reset) <| Keyboard.isDown 82
       ]
      
 
@@ -158,14 +167,3 @@ update m i j f =
           Nothing -> 0
     in
         Array.set j (Array.set i (f element) row) m
-
-
---update array i j f = 
---  let 
---    updatePart x = case Array.get j x of
---      Just y -> Array.set j (Array.set i (f y) x) array
---      Nothing -> array
---  in
---    case Array.get i array of
---      Just x -> updatePart x
---      Nothing -> array
