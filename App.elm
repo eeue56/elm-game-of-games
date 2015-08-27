@@ -17,7 +17,7 @@ type alias Model = {board : Board, clicks : Int, debug : String}
 collageWidth = 1100
 collageHeight = 400
 boardWidth = 15
-boardHeight = 12
+boardHeight = 10
 
 rectSize = 25
 
@@ -84,7 +84,7 @@ drawRect : Float -> Float -> Int -> Form
 drawRect x y value = 
   let 
     originX = -1* (collageWidth/2) + rectSize/2
-    originY = (collageHeight/2) + rectSize/2
+    originY = (collageHeight/2) - rectSize/2
   in
     rect rectSize rectSize
       |> filled (rgb (value * 255) 0 0 )
@@ -153,11 +153,11 @@ update m i j f =
         row = case Array.get j m of
           Just r -> r 
           Nothing -> Array.empty
-        elt = case Array.get i row of
+        element = case Array.get i row of
           Just e -> e
           Nothing -> 0
     in
-        Array.set j (Array.set i (f elt) row) m
+        Array.set j (Array.set i (f element) row) m
 
 
 --update array i j f = 
