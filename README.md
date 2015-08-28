@@ -21,5 +21,7 @@ Planned features:
     * Press shift s to save the current board as a "stamp"
     * Choose from a list of stamps and click to place
     * Import images to use as heatmaps 
+    * Display the current number of ticks
+    * Mutli-coloured based automata 
 
 See a demo at http://eeue56.github.io/projects/elm/game-of-games/index.html
