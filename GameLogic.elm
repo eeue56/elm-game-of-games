@@ -28,7 +28,7 @@ gameStep array = arrayUpdate array gameRule
 gameRule : Array (Array Int) -> Int -> Int -> Int
 gameRule array i j =
   let 
-    neighbours = livingNeighbours array i j
+    neighbours = fastLivingNeighbours array i j
     populate x neighbours = if
       | x == 0 -> if neighbours == 3 then 1 else 0
       | neighbours < 2 || neighbours > 3 -> 0
@@ -39,7 +39,7 @@ gameRule array i j =
       Just x -> populate x neighbours
       Nothing -> 0
 
-livingNeighbours : Board -> Int -> Int ->Int
+livingNeighbours : Board -> Int -> Int -> Int
 livingNeighbours array i j = 
   let 
     guardedGet di dj = 
@@ -52,6 +52,32 @@ livingNeighbours array i j =
       <| List.map binSwap 
       <| List.concat 
       <| List.map (\x -> List.map (guardedGet x) [-1, 0, 1]) [-1, 0, 1] 
+
+fastLivingNeighbours : Board -> Int -> Int -> Int
+fastLivingNeighbours array i j =
+  let 
+    grab di dj = matrixGet array (i + di) (j + dj) 
+    binSwap x =  case x of 
+      Just x -> x 
+      Nothing -> 0
+  in
+    List.sum
+      <| List.map binSwap 
+        [
+          -- left
+          grab -1 -1, 
+          grab -1 0, 
+          grab -1 1, 
+
+          -- middle, exclude center
+          grab 0 -1, 
+          grab 0 1, 
+
+          -- right
+          grab 1 -1, 
+          grab 1 0,
+          grab 1 1
+        ]
 
 matrixGet : Array (Array a) -> Int -> Int -> Maybe a 
 matrixGet array i j = 
