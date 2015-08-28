@@ -17,7 +17,7 @@ type alias Board = Array (Array Int)
 type alias Model = {board : Board, clicks : Int, autoplay: Bool, debug : String}
 
 collageWidth = 1100
-collageHeight = 400
+collageHeight = 500
 boardWidth = 15
 boardHeight = 10
 
@@ -44,7 +44,9 @@ resetModel model =
     resetBoard <| resetClick model
 
 view model = 
-  below (container 1000 20 middle <| show model.debug) <| below (container 500 20 middle <| show model.clicks) <| draw model.board  -- <| arrayUpdate model.board livingNeighbours
+  below (container 1000 20 middle <| show model.debug) 
+    <| below (container 500 20 middle <| show model.clicks) 
+    <| draw model.board
 
 addClick model = { model | clicks <- model.clicks + 1 }
 addDebug : String -> Model -> Model
@@ -92,9 +94,9 @@ toSquare x y =
 drawRect : Float -> Float -> Int -> Form
 drawRect x y value = 
   let 
-    originX = -1* (collageWidth/2) + rectSize/2
-    originY = (collageHeight/2) - rectSize/2
-  in
+    originX = -1 * (collageWidth / 2) + rectSize / 2
+    originY = (collageHeight / 2) - rectSize / 2
+  in 
     rect rectSize rectSize
       |> filled (rgb (value * 255) 0 0 )
       |> move (originX + rectSize * x, originY - (rectSize * y))
@@ -116,10 +118,11 @@ draw array =
     <| (filled (rgb 255 200 255) <| rect collageWidth collageHeight) :: drawArray array
 
 arrayUpdate : Board -> (Board -> Int -> Int -> Int) -> Board
-arrayUpdate array f = Array.indexedMap (\y n -> Array.indexedMap (\x m -> f array x y) n) array
+arrayUpdate array f = 
+  Array.indexedMap (\y n -> Array.indexedMap (\x m -> f array x y) n) array
 
 toggle : Board -> (Int, Int) -> Board
-toggle board (i,j) = update board i j (\x -> (x+1)%2 )
+toggle board (i, j) = update board i j (\x -> (x + 1) % 2)
 
 gameStep : Board -> Board
 gameStep array = arrayUpdate array gameRule
@@ -131,7 +134,7 @@ gameRule array i j =
     populate x neighbours = if
       | neighbours < 2 -> 0
       | neighbours > 3 -> 0
-      | x == 0  -> if neighbours == 3 then 1 else 0
+      | x == 0 -> if neighbours == 3 then 1 else 0
       | otherwise -> 1
       
   in
@@ -142,10 +145,11 @@ gameRule array i j =
 livingNeighbours : Board -> Int -> Int ->Int
 livingNeighbours array i j = 
   let 
-    guardedGet di dj = if (di, dj) /= (0, 0) then matrixGet array (i+di) (j+dj) else Nothing
+    guardedGet di dj = 
+      if (di, dj) /= (0, 0) then matrixGet array (i + di) (j + dj) else Nothing
     binSwap x =  case x of 
-        Just x -> x 
-        Nothing -> 0
+      Just x -> x 
+      Nothing -> 0
   in
     List.sum 
       <| List.map binSwap 
@@ -153,10 +157,12 @@ livingNeighbours array i j =
       <| List.map (\x -> List.map (guardedGet x) [-1..1]) [-1..1] 
 
 matrixGet : Array (Array a) -> Int -> Int -> Maybe a 
-matrixGet array i j = case Array.get j array of
-  Just x ->  Array.get i x
-  Nothing -> Nothing
+matrixGet array i j = 
+  case Array.get j array of
+    Just x ->  Array.get i x
+    Nothing -> Nothing
 
+update : Board -> Int -> Int -> (Int -> Int) -> Board
 update m i j f = 
     let
         row = case Array.get j m of
