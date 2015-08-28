@@ -23,5 +23,6 @@ Planned features:
     * Import images to use as heatmaps 
     * Display the current number of ticks
     * Mutli-coloured based automata 
+    * Enable jumping back to the start of the current "run" (different from resets)
 
 See a demo at http://eeue56.github.io/projects/elm/game-of-games/index.html
