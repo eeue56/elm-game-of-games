@@ -23,12 +23,12 @@ xSteps board x =
 
 
 gameStep : Board -> Board
-gameStep array = arrayUpdate array gameRule
+gameStep array = arrayUpdate array fastGameRule
 
 gameRule : Array (Array Int) -> Int -> Int -> Int
 gameRule array i j =
   let 
-    neighbours = fastLivingNeighbours array i j
+    neighbours = livingNeighbours array i j
     populate x neighbours = if
       | x == 0 -> if neighbours == 3 then 1 else 0
       | neighbours < 2 || neighbours > 3 -> 0
@@ -37,6 +37,22 @@ gameRule array i j =
   in
     case matrixGet array i j of
       Just x -> populate x neighbours
+      Nothing -> 0
+
+-- when x is 0
+bringToLife neighbours = 
+  if neighbours == 3 then 1 else 0
+-- when x is > 0
+alreadyAlive neighbours = 
+  if neighbours < 2 || neighbours > 3 then 0 else 1
+  
+fastGameRule : Array (Array Int) -> Int -> Int -> Int
+fastGameRule array i j =
+  let 
+    neighbours = fastLivingNeighbours array i j
+  in
+    case matrixGet array i j of
+      Just x -> if x == 0 then bringToLife neighbours else alreadyAlive neighbours
       Nothing -> 0
 
 livingNeighbours : Board -> Int -> Int -> Int
