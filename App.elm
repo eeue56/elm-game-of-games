@@ -33,9 +33,9 @@ type alias Model = {
   width : Int,
   height : Int }
 
-collageWidth = 8000
-collageHeight = 3000
-rectSize = 60
+collageWidth = 2000
+collageHeight = 1500
+rectSize = 10
 
 boardWidth = collageWidth // rectSize
 boardHeight = collageHeight // rectSize
