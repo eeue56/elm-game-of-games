@@ -3,6 +3,8 @@ import Mouse
 import Window
 
 import Time
+import Graphics.Collage exposing (..)
+import Graphics.Element exposing (..)
 
 import Boards
 import Model exposing (..)
@@ -36,8 +38,8 @@ model = {
   height = collageHeight }
 
 
-view model = 
-  draw model
+view model =
+  below (draw model) (show model.iterations)
 
 clickSignal : Signal Update
 clickSignal = 
@@ -48,7 +50,7 @@ clickSignal =
   in
     Signal.map3 clickChecker Mouse.isDown Mouse.position Keyboard.shift
 
-metronome = Time.fps 30
+metronome = Time.fps 15
 
 model' : Signal Model
 model' =
@@ -63,8 +65,8 @@ model' =
         Signal.map (\isDown -> if isDown then ToggleAutoplay else Noop) <| Keyboard.isDown 80,
         Signal.map (\_ -> TickerStep) <| metronome,
         Signal.map (\_ -> Reset) <| Keyboard.isDown 82,
-        Signal.map (\_ -> SaveBoardAsInit) <| Keyboard.isDown 83
-
+        Signal.map (\_ -> SaveBoardAsInit) <| Keyboard.isDown 83,
+        Signal.map (\_ -> BackStep 1) <| Keyboard.isDown 37
       ]
      
 

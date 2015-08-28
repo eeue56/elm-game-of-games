@@ -16,6 +16,11 @@ on board (i, j) = update board i j (\_ -> 1)
 off : Board -> (Int, Int) -> Board
 off board (i, j) = update board i j (\_ -> 0)
 
+xSteps : Board -> Int -> Board
+xSteps board x =
+  if x <= 0 then board
+  else xSteps (gameStep board) (x - 1) 
+
 
 gameStep : Board -> Board
 gameStep array = arrayUpdate array gameRule
@@ -25,9 +30,8 @@ gameRule array i j =
   let 
     neighbours = livingNeighbours array i j
     populate x neighbours = if
-      | neighbours < 2 -> 0
-      | neighbours > 3 -> 0
       | x == 0 -> if neighbours == 3 then 1 else 0
+      | neighbours < 2 || neighbours > 3 -> 0
       | otherwise -> 1
       
   in
@@ -47,7 +51,7 @@ livingNeighbours array i j =
     List.sum 
       <| List.map binSwap 
       <| List.concat 
-      <| List.map (\x -> List.map (guardedGet x) [-1..1]) [-1..1] 
+      <| List.map (\x -> List.map (guardedGet x) [-1, 0, 1]) [-1, 0, 1] 
 
 matrixGet : Array (Array a) -> Int -> Int -> Maybe a 
 matrixGet array i j = 

@@ -16,6 +16,7 @@ type Update =
   SaveBoardAsInit |
   Reset | 
   NoMouse |
+  BackStep Int |
   Noop 
 
 
@@ -41,6 +42,16 @@ addIteration model = { model | iterations <- model.iterations + 1 }
 addDebug : String -> Model -> Model
 addDebug msg model = { model | debug <- msg }
 
+backIteration : Model -> Int -> Model
+backIteration model steps = 
+  let 
+    newStep = (model.iterations - steps)
+  in
+    if newStep <= 0 then { model | board <- model.initBoard, iterations <- 0 }
+    else
+      { model | 
+        board <- xSteps model.initBoard newStep, 
+        iterations <- newStep }
 
 updateModel : Update -> Model -> Model
 updateModel action model =
@@ -57,4 +68,5 @@ updateModel action model =
     SaveBoardAsInit -> { model | initBoard <- model.board }
     Reset -> resetModel model
     NoMouse -> { model | mouseDown <- False}
+    BackStep x -> backIteration model x
     _ -> model
