@@ -10,6 +10,13 @@ arrayUpdate array f =
 toggle : Board -> (Int, Int) -> Board
 toggle board (i, j) = update board i j (\x -> (x + 1) % 2)
 
+on : Board -> (Int, Int) -> Board
+on board (i, j) = update board i j (\_ -> 1)
+
+off : Board -> (Int, Int) -> Board
+off board (i, j) = update board i j (\_ -> 0)
+
+
 gameStep : Board -> Board
 gameStep array = arrayUpdate array gameRule
 
