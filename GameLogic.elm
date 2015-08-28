@@ -56,13 +56,12 @@ livingNeighbours array i j =
 fastLivingNeighbours : Board -> Int -> Int -> Int
 fastLivingNeighbours array i j =
   let 
-    grab di dj = matrixGet array (i + di) (j + dj) 
-    binSwap x =  case x of 
-      Just x -> x 
+    grab di dj = case matrixGet array (i + di) (j + dj) of
+      Just x -> x
       Nothing -> 0
   in
     List.sum
-      <| List.map binSwap 
+      <| 
         [
           -- left
           grab -1 -1, 
