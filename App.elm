@@ -10,22 +10,40 @@ import Mouse
 import Keyboard
 import Boards
 
+import Window
+
 import Color exposing (red, black, toRgb, rgb)
 
-type Update = MouseClick Int Int | NextStep Bool | TickerStep | ToggleAutoplay | Reset | Noop 
+type Update = 
+  MouseClick Int Int | 
+  NextStep Bool | 
+  WindowResize (Int, Int) | 
+  TickerStep | 
+  ToggleAutoplay | 
+  Reset | 
+  Noop 
+
 type alias Board = Array (Array Int)
-type alias Model = {board : Board, clicks : Int, autoplay: Bool, debug : String}
 
-collageWidth = 1100
-collageHeight = 1000
-boardWidth = 150
-boardHeight = 100
+type alias Model = {
+  board : Board, 
+  clicks : Int, 
+  autoplay: Bool, 
+  debug : String,
+  width : Int,
+  height : Int }
 
-rectSize = 50
+collageWidth = 8000
+collageHeight = 3000
+rectSize = 60
+
+boardWidth = collageWidth // rectSize
+boardHeight = collageHeight // rectSize
 
 board' : Board
 board' =  
-  Boards.stampBoard 1 3 Boards.noahsLessBeautifulGithubAvatar 
+  Boards.stampBoard 5 9 Boards.sheepsBeautifulGithubAvatar
+    <| Boards.stampBoard 5 3 Boards.noahsLessBeautifulGithubAvatar 
     <| Boards.emptyBoard boardWidth boardHeight
 
 model : Model
@@ -33,7 +51,9 @@ model = {
   board = board',
   clicks = 0,
   autoplay = False,
-  debug = "" }
+  debug = "",
+  width = collageWidth,
+  height = collageHeight }
 
 
 resetModel model = 
@@ -46,7 +66,7 @@ resetModel model =
     resetBoard <| resetClick model
 
 view model = 
-  draw model.board
+  draw model
 
 addClick model = { model | clicks <- model.clicks + 1 }
 addDebug : String -> Model -> Model
@@ -58,6 +78,7 @@ updateModel action model =
     NextStep bool -> if
       | bool -> addClick { model | board <- gameStep model.board }
       | otherwise -> model
+    --WindowResize (x, y) -> { model | width <- x }
     TickerStep -> if model.autoplay then updateModel (NextStep True) model else model
     ToggleAutoplay -> addDebug (toString model.autoplay) { model | autoplay <- not model.autoplay}
     MouseClick x y -> { model | board <- toggle model.board <| toSquare x y }
@@ -75,6 +96,7 @@ model' =
     <| Signal.mergeMany
       [
         clickSignal,
+        Signal.map (\(x, y) -> WindowResize (x, y)) Window.dimensions,
         Signal.map NextStep <| Keyboard.isDown 78,
         Signal.map (\isDown -> if isDown then ToggleAutoplay else Noop) <| Keyboard.isDown 80,
         Signal.map (\_ -> TickerStep) <| metronome,
@@ -117,10 +139,10 @@ background =
   rect collageWidth collageHeight
     |> filled black
 
-draw : Board -> Element
-draw array = 
-  collage collageWidth collageHeight
-    <| background :: drawArray array
+draw : Model -> Element
+draw model = 
+  collage model.width model.height
+    <| background :: drawArray model.board
 
 arrayUpdate : Board -> (Board -> Int -> Int -> Int) -> Board
 arrayUpdate array f = 
