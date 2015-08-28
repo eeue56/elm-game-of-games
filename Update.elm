@@ -27,12 +27,12 @@ toSquare model x y =
     y // round model.rectSize
   )
 
+resetBoard model = { model | board <- model.initBoard }
+resetClick model = { model | iterations <- 0 }
+resetAutoplay model = { model | autoplay <- False}
+resetDebug model = { model | debug <- ""}
 resetModel model = 
   let
-    resetBoard model = { model | board <- model.initBoard }
-    resetClick model = { model | iterations <- 0 }
-    resetAutoplay model = { model | autoplay <- False}
-    resetDebug model = { model | debug <- ""}
   in
     resetBoard <| resetClick model
 
