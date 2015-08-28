@@ -14,7 +14,7 @@ import Update exposing (..)
 
 collageWidth = 2000
 collageHeight = 1500
-rectSize = 10
+rectSize = 15
 
 boardWidth = collageWidth // rectSize
 boardHeight = collageHeight // rectSize
@@ -39,7 +39,7 @@ model = {
 
 
 view model =
-  below (draw model) (show model.iterations)
+  draw model
 
 clickSignal : Signal Update
 clickSignal = 
