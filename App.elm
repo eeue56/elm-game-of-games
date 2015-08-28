@@ -59,11 +59,12 @@ model' =
       [
         clickSignal,
         Signal.map (\(x, y) -> WindowResize (x, y)) Window.dimensions,
-        Signal.map NextStep <| Keyboard.isDown 78,
+        Signal.map NextStep <| Signal.merge (Keyboard.isDown 78) (Keyboard.isDown 39),
         Signal.map (\isDown -> if isDown then ToggleAutoplay else Noop) <| Keyboard.isDown 80,
         Signal.map (\_ -> TickerStep) <| metronome,
         Signal.map (\_ -> Reset) <| Keyboard.isDown 82,
         Signal.map (\_ -> SaveBoardAsInit) <| Keyboard.isDown 83
+
       ]
      
 
