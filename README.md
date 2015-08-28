@@ -12,10 +12,11 @@ Features at the moment:
 
     * Press n to go through the next iteration of the board
     * Press p to pause and play the iteration at an interval of 500ms
-    * Click to select places
-    * Shift-click to unselect places
     * Press s to save the current board as the init board
     * Press r to reset the board to init
+    * Click to select places
+    * Shift-click to unselect places
+    * When the mouse is down, then pause the game until the mouse is up
 
 Planned features:
     

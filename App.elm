@@ -1,6 +1,8 @@
 import Keyboard
-
+import Mouse
 import Window
+
+import Time
 
 import Boards
 import Model exposing (..)
@@ -26,8 +28,9 @@ model = {
   rectSize = rectSize,
   initBoard = board',
   board = board',
-  clicks = 0,
+  iterations = 0,
   autoplay = False,
+  mouseDown = False,
   debug = "",
   width = collageWidth,
   height = collageHeight }
@@ -35,6 +38,17 @@ model = {
 
 view model = 
   draw model
+
+clickSignal : Signal Update
+clickSignal = 
+  let 
+    clickChecker isDown (x, y) shiftDown =
+      if isDown then MouseClick x y (if shiftDown then OffClick else OnClick) 
+        else NoMouse
+  in
+    Signal.map3 clickChecker Mouse.isDown Mouse.position Keyboard.shift
+
+metronome = Time.fps 30
 
 model' : Signal Model
 model' =
