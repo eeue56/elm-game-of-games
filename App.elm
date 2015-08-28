@@ -17,14 +17,16 @@ type alias Board = Array (Array Int)
 type alias Model = {board : Board, clicks : Int, autoplay: Bool, debug : String}
 
 collageWidth = 1100
-collageHeight = 500
-boardWidth = 15
-boardHeight = 10
+collageHeight = 1000
+boardWidth = 150
+boardHeight = 100
 
-rectSize = 25
+rectSize = 50
 
 board' : Board
-board' =  Boards.stampBoard 1 3 Boards.noahsLessBeautifulGithubAvatar <| Boards.emptyBoard boardWidth boardHeight
+board' =  
+  Boards.stampBoard 1 3 Boards.noahsLessBeautifulGithubAvatar 
+    <| Boards.emptyBoard boardWidth boardHeight
 
 model : Model
 model = {
@@ -44,9 +46,7 @@ resetModel model =
     resetBoard <| resetClick model
 
 view model = 
-  below (container 1000 20 middle <| show model.debug) 
-    <| below (container 500 20 middle <| show model.clicks) 
-    <| draw model.board
+  draw model.board
 
 addClick model = { model | clicks <- model.clicks + 1 }
 addDebug : String -> Model -> Model
@@ -94,7 +94,7 @@ toSquare x y =
 drawRect : Float -> Float -> Int -> Form
 drawRect x y value = 
   let 
-    originX = -1 * (collageWidth / 2) + rectSize / 2
+    originX = (rectSize / 2) - (collageWidth / 2) 
     originY = (collageHeight / 2) - rectSize / 2
   in 
     rect rectSize rectSize
@@ -103,19 +103,24 @@ drawRect x y value =
 
 drawRow j rowArray =
   let
-    rekt i v = drawRect (toFloat i) (toFloat j) (v)
+    rekt (i,v) = drawRect (toFloat i) (toFloat j) (v)
   in
-     Array.toList <| Array.indexedMap rekt rowArray
+    List.map rekt
+    <| List.filter (\(_, x) -> x > 0) 
+    <| Array.toIndexedList rowArray
 
 drawArray : Board -> List Form
 drawArray array =
   (List.concat << Array.toList) <| Array.indexedMap (drawRow) array
 
+background =
+  rect collageWidth collageHeight
+    |> filled black
 
 draw : Board -> Element
 draw array = 
   collage collageWidth collageHeight
-    <| (filled (rgb 255 200 255) <| rect collageWidth collageHeight) :: drawArray array
+    <| background :: drawArray array
 
 arrayUpdate : Board -> (Board -> Int -> Int -> Int) -> Board
 arrayUpdate array f = 
