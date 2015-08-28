@@ -13,11 +13,11 @@ Features at the moment:
     * Press n to go through the next iteration of the board
     * Press p to pause and play the iteration at an interval of 500ms
     * Click to deselect/select places
+    * Press s to save the current board as the init board
     * Press r to reset the board to init
 
 Planned features:
     
-    * Press s to save the current board as the init board
     * Press shift s to save the current board as a "stamp"
     * Choose from a list of stamps and click to place
     * Import images to use as heatmaps 

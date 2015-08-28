@@ -20,12 +20,14 @@ type Update =
   WindowResize (Int, Int) | 
   TickerStep | 
   ToggleAutoplay | 
+  SaveBoardAsInit |
   Reset | 
   Noop 
 
 type alias Board = Array (Array Int)
 
 type alias Model = {
+  initBoard : Board,
   board : Board, 
   clicks : Int, 
   autoplay: Bool, 
@@ -48,6 +50,7 @@ board' =
 
 model : Model
 model = {
+  initBoard = board',
   board = board',
   clicks = 0,
   autoplay = False,
@@ -58,7 +61,7 @@ model = {
 
 resetModel model = 
   let
-    resetBoard model = { model | board <- board'}
+    resetBoard model = { model | board <- model.initBoard }
     resetClick model = { model | clicks <- 0 }
     resetAutoplay model = { model | autoplay <- False}
     resetDebug model = { model | debug <- ""}
@@ -82,6 +85,7 @@ updateModel action model =
     TickerStep -> if model.autoplay then updateModel (NextStep True) model else model
     ToggleAutoplay -> addDebug (toString model.autoplay) { model | autoplay <- not model.autoplay}
     MouseClick x y -> { model | board <- toggle model.board <| toSquare x y }
+    SaveBoardAsInit -> { model | initBoard <- model.board }
     Reset -> resetModel model
     _ -> model
 
@@ -100,7 +104,8 @@ model' =
         Signal.map NextStep <| Keyboard.isDown 78,
         Signal.map (\isDown -> if isDown then ToggleAutoplay else Noop) <| Keyboard.isDown 80,
         Signal.map (\_ -> TickerStep) <| metronome,
-        Signal.map (\_ -> Reset) <| Keyboard.isDown 82
+        Signal.map (\_ -> Reset) <| Keyboard.isDown 82,
+        Signal.map (\_ -> SaveBoardAsInit) <| Keyboard.isDown 83
       ]
      
 
