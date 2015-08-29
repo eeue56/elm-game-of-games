@@ -23,10 +23,9 @@ drawRect model x y value =
 {-| 
 Assume that the canvas has already been drawn as black
   -}
-fastDrawRect : Model -> Shape -> (Float, Float) -> Float -> Float -> Int -> Form
+fastDrawRect : Model -> Form -> (Float, Float) -> Float -> Float -> Int -> Form
 fastDrawRect model myRect (originX, originY) x y value = 
     myRect
-      |> filled red
       |> move (originX + model.rectSize * x, originY - (model.rectSize * y))
 
 
@@ -42,7 +41,7 @@ drawRow model j rowArray =
 fastDrawRow : Model -> (Float, Float) -> Int -> Array Int -> List Form
 fastDrawRow model (originX, originY) j rowArray =
   let
-    myRect = rect model.rectSize model.rectSize
+    myRect = rect model.rectSize model.rectSize |> filled red
     floatJ = toFloat j
     rekt (i, v) = (fastDrawRect model myRect (originX, originY)) (toFloat i) (floatJ) (v)
   in
