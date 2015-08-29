@@ -1,7 +1,7 @@
 {
     "version": "1.4.0",
     "summary": "Game of life written in elm",
-    "repository": "git@github.com:eeue56/elm-game-of-games.git",
+    "repository": "https://github.com/eeue56/elm-game-of-games.git",
     "license": "BSD3",
     "source-directories": [
         "."

@@ -32,9 +32,7 @@ resetClick model = { model | iterations <- 0 }
 resetAutoplay model = { model | autoplay <- False}
 resetDebug model = { model | debug <- ""}
 resetModel model = 
-  let
-  in
-    resetBoard <| resetClick model
+  resetBoard <| resetClick model
 
 addIteration : Model -> Model
 addIteration model = { model | iterations <- model.iterations + 1 }
