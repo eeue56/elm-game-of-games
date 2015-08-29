@@ -14,7 +14,7 @@ import Update exposing (..)
 
 collageWidth = 2000
 collageHeight = 1500
-rectSize = 14
+rectSize = 12
 
 boardWidth = collageWidth // rectSize
 boardHeight = collageHeight // rectSize

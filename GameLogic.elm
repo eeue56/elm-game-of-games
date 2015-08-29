@@ -5,16 +5,16 @@ import Array exposing (Array)
 
 arrayUpdate : Board -> (Board -> Int -> Int -> Int) -> Board
 arrayUpdate array f = 
-  Array.indexedMap (\y n -> Array.indexedMap (\x m -> f array x y) n) array
+  Array.indexedMap (\y n -> Array.indexedMap (\x _ -> f array x y) n) array
 
 toggle : Board -> (Int, Int) -> Board
 toggle board (i, j) = update board i j (\x -> (x + 1) % 2)
 
 on : Board -> (Int, Int) -> Board
-on board (i, j) = update board i j (\_ -> 1)
+on board (i, j) = fastSet board i j 1
 
 off : Board -> (Int, Int) -> Board
-off board (i, j) = update board i j (\_ -> 0)
+off board (i, j) = fastSet board i j 0
 
 xSteps : Board -> Int -> Board
 xSteps board x =
@@ -31,8 +31,8 @@ gameRule array i j =
     neighbours = livingNeighbours array i j
     populate x neighbours = if
       | x == 0 -> if neighbours == 3 then 1 else 0
-      | neighbours < 2 || neighbours > 3 -> 0
-      | otherwise -> 1
+      | neighbours == 2 || neighbours == 3 -> 1
+      | otherwise -> 0
       
   in
     case matrixGet array i j of
@@ -44,7 +44,7 @@ bringToLife neighbours =
   if neighbours == 3 then 1 else 0
 -- when x is > 0
 alreadyAlive neighbours = 
-  if neighbours < 2 || neighbours > 3 then 0 else 1
+  if neighbours == 2 || neighbours == 3 then 1 else 0
   
 fastGameRule : Array (Array Int) -> Int -> Int -> Int
 fastGameRule array i j =
@@ -111,3 +111,12 @@ update m i j f =
           Nothing -> 0
     in
         Array.set j (Array.set i (f element) row) m
+
+fastSet : Board -> Int -> Int -> Int -> Board
+fastSet m i j v = 
+  let 
+    row = case Array.get j m of
+      Just r -> r
+      Nothing -> Array.empty
+  in
+    Array.set j (Array.set i v row) m
