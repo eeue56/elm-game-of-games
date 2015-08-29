@@ -20,7 +20,21 @@ drawRect model x y value =
       |> filled (rgb (value * 255) 0 0 )
       |> move (originX + model.rectSize * x, originY - (model.rectSize * y))
 
---drawRow : Model -> Int -> Array Int -> List Form
+{-| 
+Assume that the canvas has already been drawn as black
+  -}
+fastDrawRect : Model -> Float -> Float -> Int -> Form
+fastDrawRect model x y value = 
+  let 
+    originX = (model.rectSize / 2) - (toFloat model.width / 2) 
+    originY = (toFloat model.height / 2) - model.rectSize / 2
+  in 
+    rect model.rectSize model.rectSize
+      |> filled red
+      |> move (originX + model.rectSize * x, originY - (model.rectSize * y))
+
+
+drawRow : Model -> Int -> Array Int -> List Form
 drawRow model j rowArray =
   let
     rekt (i, v) = (drawRect model) (toFloat i) (toFloat j) (v)
@@ -29,7 +43,9 @@ drawRow model j rowArray =
     <| List.filter (\(_, x) -> x > 0) 
     <| Array.toIndexedList rowArray 
 
---drawArray : Model -> List Form
+
+
+drawArray : Model -> List Form
 drawArray model =
   (List.concat << Array.toList) <| Array.indexedMap (drawRow model) model.board
 
