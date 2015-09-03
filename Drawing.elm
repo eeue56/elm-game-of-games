@@ -29,10 +29,9 @@ drawArray model =
     drawRect' x y v = drawRect model myRect (originX, originY) (toFloat x) (toFloat y) v
   in
     Array.toList 
-      <| Array.map (\t -> snd t)
-      <| Matrix.filter (\(v,_) -> v > 0) 
-      <| grab
-      <| Matrix.indexedMap (drawRect') model.board
+      <| Array.map (\((i, j), v) -> drawRect' i j v)
+      <| Array.filter (\(_, v) -> v > 0) 
+      <| Matrix.toIndexedArray model.board
 
 background width height =
   rect (toFloat width) (toFloat height)
