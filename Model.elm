@@ -1,8 +1,9 @@
 module Model where
 
 import Array exposing (Array)
+import Matrix exposing (Matrix)
 
-type alias Board = Array (Array Int)
+type alias Board = Matrix Int
 
 type alias Model = {
   initBoard : Board,

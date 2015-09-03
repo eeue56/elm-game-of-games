@@ -2,11 +2,13 @@ import Keyboard
 import Mouse
 import Window
 
+import Matrix
+
 import Time
 import Graphics.Collage exposing (..)
 import Graphics.Element exposing (..)
 
-import Boards
+import Boards exposing (..)
 import Model exposing (..)
 import Drawing exposing (..)
 import GameLogic exposing (..)
@@ -14,16 +16,18 @@ import Update exposing (..)
 
 collageWidth = 2000
 collageHeight = 1500
-rectSize = 12
+rectSize = 30
 
 boardWidth = collageWidth // rectSize
 boardHeight = collageHeight // rectSize
 
 board' : Board
 board' =  
-  Boards.stampBoard 5 9 Boards.sheepsBeautifulGithubAvatar
-    <| Boards.stampBoard 5 3 Boards.noahsLessBeautifulGithubAvatar 
-    <| Boards.emptyBoard boardWidth boardHeight
+  Boards.emptyBoard boardWidth boardHeight
+
+  --Boards.stampBoard 5 9 Boards.sheepsBeautifulGithubAvatar
+  --  <| Boards.stampBoard 5 3 Boards.noahsLessBeautifulGithubAvatar 
+--board' = Matrix.repeat 5 5 1
 
 model : Model
 model = {
@@ -39,7 +43,7 @@ model = {
 
 
 view model =
-  draw model
+  draw model `above` show model.debug
 
 clickSignal : Signal Update
 clickSignal = 

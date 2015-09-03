@@ -59,10 +59,10 @@ updateModel action model =
       | otherwise -> model
     --WindowResize (x, y) -> { model | width <- x }
     TickerStep -> if model.autoplay && not model.mouseDown then updateModel (NextStep True) model else model
-    ToggleAutoplay -> addDebug (toString model.autoplay) { model | autoplay <- not model.autoplay}
+    ToggleAutoplay -> addDebug (toString model.autoplay) { model | autoplay <- not model.autoplay }
     MouseClick x y clickType -> case clickType of
-      OffClick -> { model | board <- off model.board <| toSquare model x y, mouseDown <- True} 
-      OnClick -> { model | board <- on model.board <| toSquare model x y, mouseDown <- True}
+      OffClick -> { model | board <- off model.board <| toSquare model x y, mouseDown <- True } 
+      OnClick -> addDebug (toString <| toSquare model x y) { model | board <- on model.board <| toSquare model x y, mouseDown <- True }
     SaveBoardAsInit -> { model | initBoard <- model.board }
     Reset -> resetModel model
     NoMouse -> { model | mouseDown <- False}
