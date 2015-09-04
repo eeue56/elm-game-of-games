@@ -40,7 +40,7 @@ fastGameRule board i j v =
 fastLivingNeighbours : Board -> Int -> Int -> Int
 fastLivingNeighbours board i j =
   let 
-    grab di dj = case Matrix.get (i + di) (j + dj) board of
+    grab di dj = case Matrix.get (j+ di) (i + dj) board of
       Just x -> x
       Nothing -> 0
   in
