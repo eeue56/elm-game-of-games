@@ -14,22 +14,10 @@ import Drawing exposing (..)
 import GameLogic exposing (..)
 import Update exposing (..)
 
-rectSize = 100
-collageWidth = rectSize * 128
-collageHeight = rectSize * 20
+rectSize = 12
+collageWidth = 2000
+collageHeight = 1500
 
--- 128 * 50 = 12800 / 2 = 12799 
--- 1024
--- 512 x 2
--- 256 x 4
--- 128 x 8
--- 64 x 16
--- 123 6
-
--- 23 * 100 + 10 = 2310
--- 24 * 50 + 20 = 1220
--- 24 * 50 + 20 = 1220
--- 24 * 24 + 40 = 616
 
 boardWidth = collageWidth // rectSize
 boardHeight = collageHeight // rectSize
