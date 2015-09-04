@@ -23,11 +23,9 @@ boardWidth = collageWidth // rectSize
 boardHeight = collageHeight // rectSize
 
 board' : Board
-board' =  
-  Boards.emptyBoard boardWidth boardHeight
-
-  --Boards.stampBoard 5 9 Boards.sheepsBeautifulGithubAvatar
-  --  <| Boards.stampBoard 5 3 Boards.noahsLessBeautifulGithubAvatar 
+board' = Boards.stampBoard 5 9 Boards.sheepsBeautifulGithubAvatar
+    <| Boards.stampBoard 5 3 Boards.noahsLessBeautifulGithubAvatar
+    <| Boards.emptyBoard boardWidth boardHeight 
 --board' = Matrix.repeat 5 5 1
 
 model : Model
