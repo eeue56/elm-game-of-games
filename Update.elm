@@ -1,8 +1,11 @@
 module Update where
 
 
+import Array
 import Model exposing (..)
 import GameLogic exposing (..)
+
+import Matrix
 
 
 type Clicked = OnClick | OffClick
@@ -62,7 +65,7 @@ updateModel action model =
     ToggleAutoplay -> addDebug (toString model.autoplay) { model | autoplay <- not model.autoplay }
     MouseClick x y clickType -> case clickType of
       OffClick -> { model | board <- off model.board <| toSquare model x y, mouseDown <- True } 
-      OnClick -> addDebug (toString <| toSquare model x y) { model | board <- on model.board <| toSquare model x y, mouseDown <- True }
+      OnClick -> addDebug (toString <| (Matrix.toIndexedArray model.board)) { model | board <- on model.board <| toSquare model x y, mouseDown <- True }
     SaveBoardAsInit -> { model | initBoard <- model.board }
     Reset -> resetModel model
     NoMouse -> { model | mouseDown <- False}

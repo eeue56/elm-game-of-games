@@ -8,8 +8,8 @@ import Array exposing (Array)
 import Matrix
 import Model exposing (..)
 
-collageWidth = 4000
-collageHeight = 4000
+collageWidth = 8000
+collageHeight = 8000
 
 {-| 
 Assume that the canvas has already been drawn as black
@@ -17,7 +17,7 @@ Assume that the canvas has already been drawn as black
 drawRect : Model -> Form -> (Float, Float) -> Float -> Float -> Int -> Form
 drawRect model myRect (originX, originY) x y value = 
     myRect
-      |> move (originX + model.rectSize * x, originY - (model.rectSize * y))
+      |> move (originX + (model.rectSize * x), originY - (model.rectSize * y))
 
 drawArray : Model -> List Form
 drawArray model =
@@ -25,13 +25,15 @@ drawArray model =
     myRect = rect model.rectSize model.rectSize |> filled red
     originX = (model.rectSize / 2) - (toFloat model.width / 2) 
     originY = (toFloat model.height / 2) - model.rectSize / 2
-    grab xs = case Matrix.map2 (\v d -> (v, d)) model.board xs of Just v -> v
     drawRect' x y v = drawRect model myRect (originX, originY) (toFloat x) (toFloat y) v
   in
-    Array.toList 
-      <| Array.map (\((i, j), v) -> drawRect' i j v)
+    --[drawRect' 62 29 1]
+    List.map (\((i, j), v) -> drawRect' i j v)
+      <| Array.toList
       <| Array.filter (\(_, v) -> v > 0) 
       <| Matrix.toIndexedArray model.board
+
+
 
 background width height =
   rect (toFloat width) (toFloat height)

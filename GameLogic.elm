@@ -10,10 +10,10 @@ toggle : Board -> (Int, Int) -> Board
 toggle board (i, j) = Matrix.update i j (\x -> (x + 1) % 2) board
 
 on : Board -> (Int, Int) -> Board
-on board (i, j) = Matrix.set j i 1 board
+on board (i, j) = Matrix.set i j 1 board
 
 off : Board -> (Int, Int) -> Board
-off board (i, j) = Matrix.set j i 0 board
+off board (i, j) = Matrix.set i j 0 board
 
 xSteps : Board -> Int -> Board
 xSteps board x =
@@ -40,7 +40,7 @@ fastGameRule board i j v =
 fastLivingNeighbours : Board -> Int -> Int -> Int
 fastLivingNeighbours board i j =
   let 
-    grab di dj = case Matrix.get (j+ di) (i + dj) board of
+    grab di dj = case Matrix.get (i + di) (j + dj) board of
       Just x -> x
       Nothing -> 0
   in
