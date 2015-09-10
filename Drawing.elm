@@ -8,9 +8,6 @@ import Array exposing (Array)
 import Matrix
 import Model exposing (..)
 
-collageWidth = 8000
-collageHeight = 8000
-
 {-| 
 Assume that the canvas has already been drawn as black
   -}
